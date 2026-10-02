@@ -1,5 +1,6 @@
 import { SpineLayout } from "@pixijs-userland/spine-layout";
 import { AppController } from "./controllers/App.controller";
+import { ReelController } from "./controllers/Reel.controller";
 import { RootLayout } from "./layout/Root.layout";
 
 async function main() {
@@ -12,6 +13,8 @@ async function main() {
   spineLayout.createInstancesFromManifest(app.manifest, "spine");
 
   app.stage.addChild(new RootLayout(spineLayout));
+
+  new ReelController(spineLayout);
 }
 
 void main();

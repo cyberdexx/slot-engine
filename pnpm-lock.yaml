@@ -15,8 +15,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(pixi.js@8.19.0)
       '@pixijs-userland/spine-layout':
-        specifier: github:pixijs-userland/spine-layout#05530f07ae20211b451ff19a0cb8396a747945f0
-        version: https://codeload.github.com/pixijs-userland/spine-layout/tar.gz/05530f07ae20211b451ff19a0cb8396a747945f0(@esotericsoftware/spine-pixi-v8@4.3.12(pixi.js@8.19.0))(howler@2.2.4)(pixi.js@8.19.0)
+        specifier: github:pixijs-userland/spine-layout#dd845f93ea2d2b9c2fc18d9b6830d4735bb3a65d
+        version: https://codeload.github.com/pixijs-userland/spine-layout/tar.gz/dd845f93ea2d2b9c2fc18d9b6830d4735bb3a65d(@esotericsoftware/spine-pixi-v8@4.3.12(pixi.js@8.19.0))(howler@2.2.4)(pixi.js@8.19.0)
       howler:
         specifier: ^2.2.4
         version: 2.2.4
@@ -919,9 +919,9 @@ packages:
     resolution: {integrity: sha512-qT7P6F48lyWVWn6w0qxWtxLVVPEcXzAlo9/nimh4cflfKQWdApqfCZVOCgaaO0xHVpClbhCzApQXlJnLEs1oaw==}
     hasBin: true
 
-  '@pixijs-userland/spine-layout@https://codeload.github.com/pixijs-userland/spine-layout/tar.gz/05530f07ae20211b451ff19a0cb8396a747945f0':
-    resolution: {tarball: https://codeload.github.com/pixijs-userland/spine-layout/tar.gz/05530f07ae20211b451ff19a0cb8396a747945f0}
-    version: 0.1.0
+  '@pixijs-userland/spine-layout@https://codeload.github.com/pixijs-userland/spine-layout/tar.gz/dd845f93ea2d2b9c2fc18d9b6830d4735bb3a65d':
+    resolution: {tarball: https://codeload.github.com/pixijs-userland/spine-layout/tar.gz/dd845f93ea2d2b9c2fc18d9b6830d4735bb3a65d}
+    version: 0.4.1
     peerDependencies:
       '@esotericsoftware/spine-pixi-v8': ^4.3.7
       howler: ^2.2.4
@@ -3155,7 +3155,7 @@ snapshots:
       microbuffer: 1.0.0
       svgpath: 2.6.0
 
-  '@pixijs-userland/spine-layout@https://codeload.github.com/pixijs-userland/spine-layout/tar.gz/05530f07ae20211b451ff19a0cb8396a747945f0(@esotericsoftware/spine-pixi-v8@4.3.12(pixi.js@8.19.0))(howler@2.2.4)(pixi.js@8.19.0)':
+  '@pixijs-userland/spine-layout@https://codeload.github.com/pixijs-userland/spine-layout/tar.gz/dd845f93ea2d2b9c2fc18d9b6830d4735bb3a65d(@esotericsoftware/spine-pixi-v8@4.3.12(pixi.js@8.19.0))(howler@2.2.4)(pixi.js@8.19.0)':
     dependencies:
       '@esotericsoftware/spine-pixi-v8': 4.3.12(pixi.js@8.19.0)
       howler: 2.2.4

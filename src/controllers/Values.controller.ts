@@ -7,6 +7,12 @@ import type { BackendController } from "./Backend.controller";
  */
 const money = (cents: number) => (cents / 100).toFixed(2);
 
+/** What the win fields show when there is no win. */
+const NO_WIN = "-";
+
+/** A win, or `-` when there is none. */
+const win = (cents: number) => (cents ? money(cents) : NO_WIN);
+
 /**
  * Keeps the layout's balance, bet and win texts in step with the backend:
  * `win` is the last round's win, `total_win` the win so far — the whole
@@ -31,22 +37,27 @@ export class ValuesController {
    * The values of a freshly connected session, put in place without the
    * `<text>_change` animation — nothing has changed for the player yet.
    */
-  async seed(lineBet = this.backend.defaultLineBet) {
+  async seed() {
     const { backend } = this;
     await Promise.all([
       this.write("balance", money(backend.balance), "seed"),
-      this.write("bet", money(backend.totalBet(lineBet)), "seed"),
-      this.write("win", money(backend.roundPaid), "seed"),
-      this.write("total_win", money(this.totalWin), "seed"),
+      this.write("bet", money(backend.totalBet()), "seed"),
+      this.write("win", win(backend.roundPaid), "seed"),
+      this.write("total_win", win(this.totalWin), "seed"),
     ]);
     this.seeded = true;
+  }
+
+  /** The total bet for the selected line bet. */
+  showBet() {
+    return this.set("bet", money(this.backend.totalBet()));
   }
 
   /** Bet, win and balance after a round. */
   private async showRound() {
     const { backend } = this;
     await Promise.all([
-      this.set("bet", money(backend.totalBet())),
+      this.showBet(),
       this.showWin("win", backend.roundPaid),
       this.showWin("total_win", this.totalWin),
       this.set("balance", money(backend.balance)),
@@ -58,11 +69,11 @@ export class ValuesController {
     return backend.freespinsActive ? backend.freespinsPaid : backend.roundPaid;
   }
 
-  /** A win counts up; no win clears the field at once rather than counting down. */
+  /** A win counts up (from 0 after a `-`); no win shows `-` at once. */
   private showWin(key: string, cents: number) {
     return cents
-      ? this.set(key, money(cents))
-      : this.write(key, money(0), "settle");
+      ? this.set(key, win(cents))
+      : this.write(key, NO_WIN, "settle");
   }
 
   private set(key: string, value: string) {

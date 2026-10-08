@@ -1,12 +1,22 @@
 import type { SpineLayout } from "@pixijs-userland/spine-layout";
 import { settings } from "../settings/settings";
+import type { BackendController } from "./Backend.controller";
 
 const SPIN_CLICK = "spin_click";
 const UPDATE_SYMBOLS = "update_symbols";
+/** `state_spin_end/` — the reels landing. */
+const SPIN_END = "spin_end";
+/** `state_reveal_win/` — shown after the reels land on a win. */
+const REVEAL_WIN = "reveal_win";
 
 export class ReelController {
-  constructor(private readonly layout: SpineLayout) {
-    layout.animations.addEventListener(SPIN_CLICK, () => this.roll());
+  private spinning = false;
+
+  constructor(
+    private readonly layout: SpineLayout,
+    private readonly backend?: BackendController,
+  ) {
+    layout.animations.addEventListener(SPIN_CLICK, () => this.startSpin());
 
     layout.animations.addEventListener(UPDATE_SYMBOLS, () =>
       this.updateSymbols(),
@@ -35,7 +45,59 @@ export class ReelController {
     });
   }
 
-  private roll() {
-    console.log(`!!! REQUEST BE SPIN RESUTL HERE !!!`);
+  private async startSpin() {
+    if (this.spinning) return;
+    this.spinning = true;
+    this.blockUI();
+
+    try {
+      const win = await this.roll();
+      await this.reveal();
+      if (win > 0) await this.revealWin();
+    } finally {
+      this.unblockUI();
+      this.spinning = false;
+    }
+  }
+
+  /**
+   * Requests the round from the backend and resolves with its win, in cents —
+   * 0 without a backend or on a failed request: the reels land either way.
+   */
+  private async roll() {
+    const { backend } = this;
+    // No backend (production build) or not connected yet.
+    if (!backend?.connected) return 0;
+
+    try {
+      const result = await backend.spin();
+      console.info("[backend] spin", result);
+      return result.win;
+    } catch (error) {
+      console.error("[backend] spin failed", error);
+      return 0;
+    }
+  }
+
+  /** Plays `state_spin_end` on every spine that has it and waits for it to finish. */
+  private async reveal() {
+    await this.layout.animations.playState(SPIN_END);
+  }
+
+  /** Plays `state_reveal_win` and waits for it to finish. */
+  private async revealWin() {
+    await this.layout.animations.playState(REVEAL_WIN);
+  }
+
+  /**
+   * Every button in the layout is a hit area under it, so switching off its
+   * children's interactivity blocks them all — spin included — at once.
+   */
+  private blockUI() {
+    this.layout.interactiveChildren = false;
+  }
+
+  private unblockUI() {
+    this.layout.interactiveChildren = true;
   }
 }

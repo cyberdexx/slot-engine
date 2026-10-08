@@ -1,8 +1,10 @@
 import { SpineLayout } from "@pixijs-userland/spine-layout";
 import { AppController } from "./controllers/App.controller";
 import { BackendController } from "./controllers/Backend.controller";
+import { BetController } from "./controllers/Bet.controller";
 import { ReelController } from "./controllers/Reel.controller";
 import { initSounds } from "./controllers/Sounds.controller";
+import { TimeController } from "./controllers/Time.controller";
 import { ValuesController } from "./controllers/Values.controller";
 import { RootLayout } from "./layout/Root.layout";
 
@@ -19,37 +21,33 @@ async function main() {
 
   app.stage.addChild(new RootLayout(spineLayout));
 
-  new ReelController(spineLayout);
+  // The backend is reached through the `vite dev` proxy (vite.config.ts),
+  // so it is only wired in there.
+  const backend = import.meta.env.DEV
+    ? new BackendController({
+        game: "thunder_coins_xxxl",
+        serverURL: `${location.origin}/playson-backend`,
+        wlCode: "demomode",
+        projectId: 1,
+        columns: 3,
+        rows: 6,
+        lines: 20,
+        player: { key: "test" },
+      })
+    : undefined;
 
-  // The backend is reached through the `vite dev` proxy (vite.config.ts).
-  // Until the reels are wired to it: Space spins, the balance / bet / win
-  // texts follow the result, and it is logged.
-  if (import.meta.env.DEV) {
-    const backend = new BackendController({
-      game: "thunder_coins_xxxl",
-      serverURL: `${location.origin}/playson-backend`,
-      wlCode: "demomode",
-      projectId: 1,
-      columns: 3,
-      rows: 6,
-      lines: 20,
-      player: { key: "test" },
-    });
+  new ReelController(spineLayout, backend);
+  new TimeController(spineLayout);
+
+  if (backend) {
     const values = new ValuesController(spineLayout, backend);
+    new BetController(spineLayout, backend, values);
     Object.assign(window, { backend });
     backend.on("error", (error) => console.error("[backend]", error));
 
     await backend.connect();
     await values.seed();
     console.info(`[backend] connected, balance ${backend.balance / 100}`);
-
-    window.addEventListener("keydown", (event) => {
-      if (event.code !== "Space" || event.repeat) return;
-      backend
-        .spin(backend.defaultLineBet)
-        .then((result) => console.info("[backend] spin", result))
-        .catch((error) => console.error("[backend] spin failed", error));
-    });
   }
 }
 

@@ -216,6 +216,15 @@ function assetpackPlugin(): Plugin {
   };
 }
 
+// ─── Game backend (dev server proxy) ────────────────────────────────────────
+// The Playson dev backend only allows CORS from localhost:4000, so in `vite dev`
+// the page reaches it through this proxy. BackendController puts the command
+// before the last path segment: <origin>/playson-backend →
+// <origin>/<command>/playson-backend?r=…
+const BACKEND_PATH = "playson-backend";
+const BACKEND_SERVER =
+  process.env.BACKEND_SERVER ?? "https://cell-dev-wl.dev-pls.com";
+
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
   // Served from the repo subpath on GitHub Pages, from root in local dev.
@@ -225,6 +234,13 @@ export default defineConfig(({ command }) => ({
   server: {
     port: 8080,
     open: true,
+    proxy: {
+      [`^/[\\w-]+/${BACKEND_PATH}(\\?|$)`]: {
+        target: BACKEND_SERVER,
+        changeOrigin: true,
+        rewrite: (url) => url.replace(`/${BACKEND_PATH}`, ""),
+      },
+    },
   },
   // Pixi + top-level await in main.ts need a modern output target.
   build: {

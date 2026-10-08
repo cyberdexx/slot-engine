@@ -2,10 +2,21 @@ import type { SpineLayout } from "@pixijs-userland/spine-layout";
 import { settings } from "../settings/settings";
 
 const SPIN_CLICK = "spin_click";
+const UPDATE_SYMBOLS = "update_symbols";
 
 export class ReelController {
-  constructor(layout: SpineLayout) {
+  constructor(private readonly layout: SpineLayout) {
     layout.animations.addEventListener(SPIN_CLICK, () => this.roll());
+
+    layout.animations.addEventListener(UPDATE_SYMBOLS, () =>
+      this.updateSymbols(),
+    );
+
+    this.updateSymbols();
+  }
+
+  private updateSymbols() {
+    const { layout } = this;
 
     // random skin from settings.symbols for each symbol instance
     layout.multipleInstanceIds.forEach((spineID) => {
@@ -25,6 +36,6 @@ export class ReelController {
   }
 
   private roll() {
-    console.log(`!!! Roll`);
+    console.log(`!!! REQUEST BE SPIN RESUTL HERE !!!`);
   }
 }

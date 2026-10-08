@@ -3,6 +3,7 @@ import { AppController } from "./controllers/App.controller";
 import { BackendController } from "./controllers/Backend.controller";
 import { ReelController } from "./controllers/Reel.controller";
 import { initSounds } from "./controllers/Sounds.controller";
+import { ValuesController } from "./controllers/Values.controller";
 import { RootLayout } from "./layout/Root.layout";
 
 async function main() {
@@ -21,7 +22,8 @@ async function main() {
   new ReelController(spineLayout);
 
   // The backend is reached through the `vite dev` proxy (vite.config.ts).
-  // Until the reels are wired to it: Space spins and logs the result.
+  // Until the reels are wired to it: Space spins, the balance / bet / win
+  // texts follow the result, and it is logged.
   if (import.meta.env.DEV) {
     const backend = new BackendController({
       game: "thunder_coins_xxxl",
@@ -33,16 +35,18 @@ async function main() {
       lines: 20,
       player: { key: "test" },
     });
+    const values = new ValuesController(spineLayout, backend);
     Object.assign(window, { backend });
     backend.on("error", (error) => console.error("[backend]", error));
 
     await backend.connect();
+    await values.seed();
     console.info(`[backend] connected, balance ${backend.balance / 100}`);
 
     window.addEventListener("keydown", (event) => {
       if (event.code !== "Space" || event.repeat) return;
       backend
-        .spin(10)
+        .spin(backend.defaultLineBet)
         .then((result) => console.info("[backend] spin", result))
         .catch((error) => console.error("[backend] spin failed", error));
     });

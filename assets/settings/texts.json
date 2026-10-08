@@ -20,138 +20,170 @@
   },
   "ui": {
     "balance": {
-      "type": "bitmapText",
-      "fontFamily": "green",
-      "align": "center",
-      "fontSize": 1,
-      "letterSpacing": -4,
-      "offset": {
-        "x": 0,
-        "y": 0
-      },
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#ffffff",
+      "fontSize": 30,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
+      "letterSpacing": 3,
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 208,
-      "maxHeight": 0,
+      "wordWrapWidth": 100,
+      "stroke": {
+        "color": "#000000",
+        "width": 5
+      },
       "uppercase": false,
       "animateNumber": true,
-      "value": "1000000000"
+      "value": "0"
     },
     "time": {
-      "type": "bitmapText",
-      "fontFamily": "yellow",
-      "align": "center",
-      "fontSize": 1,
-      "letterSpacing": -4,
-      "offset": {
-        "x": 0,
-        "y": 0
-      },
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#ffffff",
+      "fontSize": 30,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
+      "letterSpacing": 0,
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 0,
-      "maxHeight": 0,
+      "wordWrapWidth": 100,
+      "stroke": {
+        "color": "#000000",
+        "width": 6
+      },
       "uppercase": true,
       "animateNumber": false,
       "value": "12:00"
     },
     "bet": {
-      "type": "bitmapText",
-      "fontFamily": "green",
-      "align": "center",
-      "fontSize": 1,
-      "letterSpacing": -4,
-      "offset": {
-        "x": 0,
-        "y": 0
-      },
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#ffffff",
+      "fontSize": 30,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
+      "letterSpacing": 1,
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 154,
-      "maxHeight": 0,
+      "wordWrapWidth": 100,
+      "stroke": {
+        "color": "#000000",
+        "width": 5
+      },
       "uppercase": false,
       "animateNumber": true,
-      "value": "100000000"
+      "value": "1,00"
     },
     "total_win": {
-      "type": "bitmapText",
-      "fontFamily": "green",
-      "align": "center",
-      "fontSize": 1.5,
-      "letterSpacing": -9,
-      "offset": {
-        "x": 0,
-        "y": 0
-      },
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#ffffff",
+      "fontSize": 40,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
+      "letterSpacing": 1,
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 242,
-      "maxHeight": 0,
+      "wordWrapWidth": 100,
+      "stroke": {
+        "color": "#000000",
+        "width": 5
+      },
       "uppercase": true,
       "animateNumber": true,
-      "value": "10000000"
+      "value": "-"
     },
     "win": {
-      "type": "bitmapText",
-      "fontFamily": "green",
-      "align": "center",
-      "fontSize": 4,
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#ffffff",
+      "fontSize": 50,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
       "letterSpacing": 0,
-      "offset": {
-        "x": 0,
-        "y": 0
-      },
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 0,
-      "maxHeight": 0,
+      "wordWrapWidth": 100,
+      "stroke": {
+        "color": "#000000",
+        "width": 4
+      },
       "uppercase": true,
       "animateNumber": true,
-      "value": "1000000"
+      "value": ""
     },
     "balance_title": {
-      "type": "bitmapText",
-      "fontFamily": "yellow",
-      "align": "center",
-      "fontSize": 1,
-      "letterSpacing": -6,
-      "offset": {
-        "x": 0,
-        "y": -8
-      },
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#07adf6",
+      "fontSize": 27,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
+      "letterSpacing": 3,
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 0,
-      "maxHeight": 0,
-      "uppercase": true,
+      "wordWrapWidth": 100,
+      "stroke": {
+        "color": "#000000",
+        "width": 6
+      },
+      "uppercase": false,
       "animateNumber": false,
       "value": "balance"
     },
     "bet_title": {
-      "type": "bitmapText",
-      "fontFamily": "yellow",
-      "align": "center",
-      "fontSize": 1,
-      "letterSpacing": -5,
-      "offset": {
-        "x": 0,
-        "y": -6
-      },
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#0283e8",
+      "fontSize": 34,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
+      "letterSpacing": -2,
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 0,
-      "maxHeight": 0,
-      "uppercase": true,
+      "wordWrapWidth": 100,
+      "stroke": {
+        "color": "#000000",
+        "width": 6
+      },
+      "uppercase": false,
       "animateNumber": false,
       "value": "bet"
     },
     "win_title": {
-      "type": "bitmapText",
-      "fontFamily": "yellow",
-      "align": "center",
-      "fontSize": 1,
-      "letterSpacing": -5,
-      "offset": {
-        "x": 0,
-        "y": -7
-      },
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#0082e8",
+      "fontSize": 36,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
+      "letterSpacing": 2,
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 0,
-      "maxHeight": 0,
-      "uppercase": true,
+      "wordWrapWidth": 100,
+      "stroke": {
+        "color": "#000000",
+        "width": 5
+      },
+      "uppercase": false,
       "animateNumber": false,
       "value": "win"
     },
@@ -173,18 +205,18 @@
       "value": ""
     },
     "freeSpins_title": {
-      "type": "bitmapText",
-      "fontFamily": "yellow",
-      "align": "center",
+      "type": "text",
+      "fontFamily": "saranai",
+      "align": "left",
+      "breakWords": false,
+      "fill": "#ffffff",
       "fontSize": 1,
+      "fontStyle": "normal",
+      "fontWeight": "normal",
       "letterSpacing": -5,
-      "offset": {
-        "x": 0,
-        "y": -6
-      },
+      "lineHeight": 0,
       "wordWrap": false,
-      "maxWidth": 0,
-      "maxHeight": 0,
+      "wordWrapWidth": 100,
       "uppercase": true,
       "animateNumber": false,
       "value": ""

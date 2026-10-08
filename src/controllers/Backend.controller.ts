@@ -191,7 +191,7 @@ export class BackendController extends EventTarget {
   /** Line bet of the last round, in cents. */
   bet = 1;
   totalBetMultiplier = 1;
-  /** Bet steps and the default step from the start/reconnect config. */
+  /** Line bets (cents) on offer and the index of the default one, from the start/reconnect config. */
   stakes: number[] = [];
   defaultStake?: number;
   /** Attributes of every <combination> / <scatter> in the paytable. */
@@ -320,6 +320,20 @@ export class BackendController extends EventTarget {
 
   hasBonusWins() {
     return this.freespinsAwarded > 0;
+  }
+
+  /** The line bet to start with, in cents: the default stake, or the last one on offer (as unicore). */
+  get defaultLineBet() {
+    return (
+      this.stakes[this.defaultStake ?? -1] ??
+      this.stakes[this.stakes.length - 1] ??
+      this.bet
+    );
+  }
+
+  /** Total bet for a line bet, in cents. */
+  totalBet(lineBet = this.bet) {
+    return lineBet * this.totalBetMultiplier;
   }
 
   startFreespins(notify = true) {

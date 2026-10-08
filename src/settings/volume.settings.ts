@@ -6,7 +6,7 @@ import type { SoundSettings } from "@pixijs-userland/spine-layout";
  * extension. A sound left out plays at `fxVolume`.
  */
 export const volumeSettings = {
-  musicVolume: 0.3,
+  musicVolume: 0.2,
   fxVolume: 0.8,
   soundsVolumes: {
     click: 0.6,

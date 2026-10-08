@@ -1,18 +1,14 @@
-import { EventTimeline } from "@esotericsoftware/spine-pixi-v8";
 import type { SpineLayout } from "@pixijs-userland/spine-layout";
 
-const SPIN = "spin_5_rows";
-const SPIN_TIME = 3000;
+const SPIN_CLICK = "spin_click";
 const SPECIAL = ["SC", "WI"];
 const reelNumber = (id: string) => Number(id.match(/(\d+)$/)?.[1] ?? 0);
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class ReelController {
   private reels: string[];
   private slots: number;
   private symbols: string[];
-  private alignTime = 0;
-  private spinAnimation = SPIN;
+  private result: string[][] = [];
 
   constructor(private layout: SpineLayout) {
     const symbols = layout.spine.getSpinesByNamePattern("symbol");
@@ -30,21 +26,7 @@ export class ReelController {
       .map(({ name }) => name)
       .filter((name) => name !== "default" && !SPECIAL.includes(name));
 
-    const spin = data.animations.find(
-      ({ name }) => name === SPIN || name.endsWith(`/${SPIN}`),
-    );
-
-    if (spin) this.spinAnimation = spin.name;
-
-    spin?.timelines.forEach((timeline) => {
-      if (!(timeline instanceof EventTimeline)) return;
-
-      timeline.events.forEach((event) => {
-        if (event.data.name.startsWith("update/symbol-")) {
-          this.alignTime = Math.max(this.alignTime, event.time);
-        }
-      });
-    });
+    this.roll();
 
     this.reels.forEach((reelID, reel) => {
       for (let slot = 0; slot < this.slots; slot++) {
@@ -59,41 +41,30 @@ export class ReelController {
       }
     });
 
+    // The spin button fires `spin_click`, which plays `event_spin_click/` on every reel.
+    layout.animations.addEventListener(SPIN_CLICK, () => this.roll());
+
     for (let slot = 0; slot < this.slots; slot++) {
       layout.animations.addEventListener(`update/symbol-${slot}`, (reelID) =>
         this.setSymbol(this.reels.indexOf(reelID as string), slot),
       );
     }
-
-    this.reels.forEach((reelID, reel) => void this.spin(reelID, reel));
   }
 
-  private async spin(reelID: string, reel: number) {
-    const { animations } = this.layout;
-    const end = Date.now() + SPIN_TIME + reel * 150;
-
-    await wait(reel * 150);
-
-    while (Date.now() < end) await animations.play(reelID, this.spinAnimation);
-
-    const last = animations.play(reelID, this.spinAnimation);
-    const entry = this.layout.spines
-      .get(reelID)!
-      .state.tracks.find(
-        (track) => track?.animation?.name === this.spinAnimation,
-      );
-
-    if (entry && this.alignTime) entry.animationEnd = this.alignTime;
-
-    await last;
+  /** Picks the symbols the reels land on; each slot takes its own as the spin passes it. */
+  private roll() {
+    this.result = this.reels.map(() =>
+      Array.from(
+        { length: this.slots },
+        () => this.symbols[Math.floor(Math.random() * this.symbols.length)],
+      ),
+    );
   }
 
   private setSymbol(reel: number, slot: number) {
-    const name = this.symbols[Math.floor(Math.random() * this.symbols.length)];
-
     this.layout.skins.applyBySpineID(
       `symbol${reel * this.slots + slot + 1}`,
-      name,
+      this.result[reel][slot],
     );
   }
 }

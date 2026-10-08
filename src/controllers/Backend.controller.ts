@@ -161,6 +161,8 @@ const numbers = (value: string | null | undefined, separator = ",") =>
 export class BackendController extends EventTarget {
   // ─── Transport (unicore Connection) ───────────────────────────────────────
   session: string | null;
+  /** connect() has finished: the game config is in and rounds can be played. */
+  connected = false;
   wlCode?: string;
   syncTime: number;
 
@@ -191,9 +193,11 @@ export class BackendController extends EventTarget {
   /** Line bet of the last round, in cents. */
   bet = 1;
   totalBetMultiplier = 1;
-  /** Bet steps and the default step from the start/reconnect config. */
+  /** Line bets (cents) on offer and the index of the default one, from the start/reconnect config. */
   stakes: number[] = [];
   defaultStake?: number;
+  /** Line bet the next round is played at, in cents — one of `stakes`. */
+  lineBet = 0;
   /** Attributes of every <combination> / <scatter> in the paytable. */
   payouts: Record<string, string>[] = [];
   paylines: Payline[] = [];
@@ -268,11 +272,14 @@ export class BackendController extends EventTarget {
    * first). Can be called while assets are still loading.
    */
   async connect(giftSpinId?: string) {
+    this.connected = false;
     await this.send(this.createConnectMessage());
     if (this.mode === "leave") await this.leave();
-    return this.mode === "reconnect"
+    const response = await (this.mode === "reconnect"
       ? this.reconnect(giftSpinId)
-      : this.start();
+      : this.start());
+    this.connected = true;
+    return response;
   }
 
   /** Game config and the unfinished round, if any. */
@@ -295,6 +302,7 @@ export class BackendController extends EventTarget {
   /** Sends logout and stops all traffic. */
   close() {
     if (this.closed) return;
+    this.connected = false;
     this.reset();
     void this.send(this.createMessage("logout")).catch(() => {});
     this.closed = true;
@@ -303,7 +311,7 @@ export class BackendController extends EventTarget {
   // ─── Rounds ───────────────────────────────────────────────────────────────
 
   /** One round at `lineBet` cents per line (total = lineBet × totalBetMultiplier). */
-  async spin(lineBet = this.bet) {
+  async spin(lineBet = this.lineBet) {
     const message = this.createMessage(this.status === "next" ? "next" : "bet");
     this.append(message, "bet", { cash: lineBet });
     await this.send(message);
@@ -320,6 +328,36 @@ export class BackendController extends EventTarget {
 
   hasBonusWins() {
     return this.freespinsAwarded > 0;
+  }
+
+  /** The line bet to start with, in cents: the default stake, or the last one on offer (as unicore). */
+  get defaultLineBet() {
+    return (
+      this.stakes[this.defaultStake ?? -1] ??
+      this.stakes[this.stakes.length - 1] ??
+      this.bet
+    );
+  }
+
+  /** Total bet for a line bet, in cents. */
+  totalBet(lineBet = this.lineBet) {
+    return lineBet * this.totalBetMultiplier;
+  }
+
+  /**
+   * Moves `lineBet` by `steps` along `stakes`, stopping at either end.
+   * Returns whether it changed.
+   */
+  changeLineBet(steps: number) {
+    const { stakes } = this;
+    if (!stakes.length) return false;
+    const index = Math.min(
+      Math.max(stakes.indexOf(this.lineBet) + steps, 0),
+      stakes.length - 1,
+    );
+    if (stakes[index] === this.lineBet) return false;
+    this.lineBet = stakes[index];
+    return true;
   }
 
   startFreespins(notify = true) {
@@ -397,6 +435,7 @@ export class BackendController extends EventTarget {
     );
     const defaultStake = xml.querySelector("extra defaultBet")?.textContent;
     this.defaultStake = defaultStake ? Number(defaultStake) : undefined;
+    if (!this.stakes.includes(this.lineBet)) this.lineBet = this.defaultLineBet;
 
     this.reelSet =
       Number(xml.querySelector("shift")?.getAttribute("reel_set")) || 1;
@@ -436,6 +475,8 @@ export class BackendController extends EventTarget {
     if (spinCmd) {
       this.status = spinCmd.getAttribute("status") ?? this.status;
       this.parseBet(spinCmd);
+      // An unfinished round goes on at the bet it was started with.
+      if (this.stakes.includes(this.bet)) this.lineBet = this.bet;
     }
     // That was the last round of freespins.
     if (this.freespinsActive && this.freespinsNumber === 0) {

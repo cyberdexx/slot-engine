@@ -170,7 +170,7 @@
       "maxHeight": 0,
       "uppercase": true,
       "animateNumber": false,
-      "value": "12/22"
+      "value": ""
     },
     "freeSpins_title": {
       "type": "bitmapText",
@@ -187,7 +187,7 @@
       "maxHeight": 0,
       "uppercase": true,
       "animateNumber": false,
-      "value": "free  spins"
+      "value": ""
     }
   }
 }

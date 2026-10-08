@@ -8,7 +8,7 @@ import { SpineLayout } from "@pixijs-userland/spine-layout";
  * down — never up — once either side drops below it.
  */
 const DESIGN_WIDTH = 1080;
-const DESIGN_HEIGHT = 900;
+const DESIGN_HEIGHT = 1200;
 
 export class RootLayout extends Layout {
   constructor(spineLayout: SpineLayout = new SpineLayout()) {
@@ -36,7 +36,7 @@ export class RootLayout extends Layout {
           // authored well past it) simply bleeds out — it is never measured, so
           // it never pulls the scale down.
           maxWidth: "100%",
-          maxHeight: "80%",
+          maxHeight: "100%",
         },
       },
     });

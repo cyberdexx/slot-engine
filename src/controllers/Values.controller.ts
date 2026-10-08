@@ -53,13 +53,20 @@ export class ValuesController {
     return this.set("bet", money(this.backend.totalBet()));
   }
 
-  /** Bet, win and balance after a round. */
+  /**
+   * The win so far, once the round has been revealed — the reels' owner calls
+   * this after they land (and after the win reveal, on a win).
+   */
+  showTotalWin() {
+    return this.showWin("total_win", this.totalWin);
+  }
+
+  /** Bet, win and balance as soon as a round comes in; total_win waits for showTotalWin(). */
   private async showRound() {
     const { backend } = this;
     await Promise.all([
       this.showBet(),
       this.showWin("win", backend.roundPaid),
-      this.showWin("total_win", this.totalWin),
       this.set("balance", money(backend.balance)),
     ]);
   }

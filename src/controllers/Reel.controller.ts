@@ -1,6 +1,7 @@
 import type { SpineLayout } from "@pixijs-userland/spine-layout";
 import { settings } from "../settings/settings";
 import type { BackendController } from "./Backend.controller";
+import type { ValuesController } from "./Values.controller";
 
 const SPIN_CLICK = "spin_click";
 const UPDATE_SYMBOLS = "update_symbols";
@@ -15,6 +16,7 @@ export class ReelController {
   constructor(
     private readonly layout: SpineLayout,
     private readonly backend?: BackendController,
+    private readonly values?: ValuesController,
   ) {
     layout.animations.addEventListener(SPIN_CLICK, () => this.startSpin());
 
@@ -54,6 +56,8 @@ export class ReelController {
       const win = await this.roll();
       await this.reveal();
       if (win > 0) await this.revealWin();
+      // Counts up while the UI is already free again.
+      void this.values?.showTotalWin();
     } finally {
       this.unblockUI();
       this.spinning = false;

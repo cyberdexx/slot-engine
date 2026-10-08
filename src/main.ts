@@ -36,11 +36,12 @@ async function main() {
       })
     : undefined;
 
-  new ReelController(spineLayout, backend);
+  const values = backend && new ValuesController(spineLayout, backend);
+
+  new ReelController(spineLayout, backend, values);
   new TimeController(spineLayout);
 
-  if (backend) {
-    const values = new ValuesController(spineLayout, backend);
+  if (backend && values) {
     new BetController(spineLayout, backend, values);
     Object.assign(window, { backend });
     backend.on("error", (error) => console.error("[backend]", error));

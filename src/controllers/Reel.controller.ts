@@ -12,6 +12,7 @@ export class ReelController {
   private slots: number;
   private symbols: string[];
   private alignTime = 0;
+  private spinAnimation = SPIN;
 
   constructor(private layout: SpineLayout) {
     const symbols = layout.spine.getSpinesByNamePattern("symbol");
@@ -29,7 +30,13 @@ export class ReelController {
       .map(({ name }) => name)
       .filter((name) => name !== "default" && !SPECIAL.includes(name));
 
-    data.findAnimation(SPIN)?.timelines.forEach((timeline) => {
+    const spin = data.animations.find(
+      ({ name }) => name === SPIN || name.endsWith(`/${SPIN}`),
+    );
+
+    if (spin) this.spinAnimation = spin.name;
+
+    spin?.timelines.forEach((timeline) => {
       if (!(timeline instanceof EventTimeline)) return;
 
       timeline.events.forEach((event) => {
@@ -67,12 +74,14 @@ export class ReelController {
 
     await wait(reel * 150);
 
-    while (Date.now() < end) await animations.play(reelID, SPIN);
+    while (Date.now() < end) await animations.play(reelID, this.spinAnimation);
 
-    const last = animations.play(reelID, SPIN);
+    const last = animations.play(reelID, this.spinAnimation);
     const entry = this.layout.spines
       .get(reelID)!
-      .state.tracks.find((track) => track?.animation?.name.endsWith(SPIN));
+      .state.tracks.find(
+        (track) => track?.animation?.name === this.spinAnimation,
+      );
 
     if (entry && this.alignTime) entry.animationEnd = this.alignTime;
 

@@ -36,7 +36,7 @@ export class RootLayout extends Layout {
           // authored well past it) simply bleeds out — it is never measured, so
           // it never pulls the scale down.
           maxWidth: "100%",
-          maxHeight: "100%",
+          maxHeight: "80%",
         },
       },
     });

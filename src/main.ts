@@ -2,12 +2,15 @@ import { SpineLayout } from "@pixijs-userland/spine-layout";
 import { AppController } from "./controllers/App.controller";
 import { BackendController } from "./controllers/Backend.controller";
 import { ReelController } from "./controllers/Reel.controller";
+import { initSounds } from "./controllers/Sounds.controller";
 import { RootLayout } from "./layout/Root.layout";
 
 async function main() {
   const app = new AppController();
 
   await app.init();
+
+  initSounds(app.manifest);
 
   const spineLayout = new SpineLayout({ debug: true });
 
